@@ -79,7 +79,7 @@ Scan complete. 1 duplicate pair found.
 
 ## Team
 
-Fetehadin Negash · Peniel Melaku · Anwar Ibrahim · Yonathan
+Fetehadin Negash · Peniel Melaku · Anwar Ibrahim · Yonathan Yilma
 
 *(Task assignments to be added.)*
 
