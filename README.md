@@ -88,7 +88,6 @@ Fetehadin Negash · Peniel Melaku · Anwar Ibrahim · Yonathan Yilma
 | Anwar Ibrahim | Backend API (`ApiServer`) & CLI |
 | Yonathan Yilma | Web frontend (`index.html`, `app.js`, `styles.css`) |
 
-*(Adjust to match who's actually doing what.)*
 
 ## License
 MIT — see [`LICENSE`](LICENSE)
