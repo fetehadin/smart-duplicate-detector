@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Duplicate Detector</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Smart Duplicate Detector</h1>
+      <p>Find similar Java methods in a project directory.</p>
+    </header>
+
+    <form id="scan-form">
+      <label for="project-path">Project path</label>
+      <input id="project-path" name="path" type="text" placeholder="/path/to/java/project" required>
+
+      <div class="threshold-row">
+        <label for="threshold">Similarity threshold</label>
+        <input id="threshold" name="threshold" type="range" min="0" max="1" step="0.01" value="0.75">
+        <output id="threshold-value" for="threshold">0.75</output>
+      </div>
+
+      <button id="scan-button" type="submit">Scan</button>
+    </form>
+
+    <p id="error-banner" class="error" role="alert" hidden></p>
+    <section id="results" hidden aria-live="polite">
+      <p id="summary"></p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Method A</th>
+              <th>File:Line</th>
+              <th>Method B</th>
+              <th>File:Line</th>
+              <th>Similarity %</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
