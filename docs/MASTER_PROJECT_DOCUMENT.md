@@ -84,56 +84,56 @@ A text search for calculateDiscount will never surface applyPriceReduction. A to
 - A "keep / mark for replacement" decision system (Command pattern)
 - Additional similarity algorithms (structural/AST-based comparison)  
   ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANklEQVR4nO3OMQ2AABAAsSNBCkJfFEIwwIgHRiywEZJWQZeZ2ao9AAD+4lyruzq+ngAA8Nr1AOHsBegrsOrIAAAAAElFTkSuQmCC)  
-  **4. Features**  
-  **Core Features**  
+**4. Features**  
+**Core Features**  
   _**F1 — Project Scanner**_
-- **Description:** Recursively finds every .java file under a given folder.
-- **User story:** As a developer, I want to point the tool at my project root so I don't have to list files manually.
-- **Inputs:** A folder path (string)
-- **Outputs:** A list of .java file paths
-- **OOP concepts used:** Encapsulation (internal file-walking logic hidden behind a simple method), custom exceptions for invalid paths
-- **Complexity:** Low
-- **Priority:** High  
+    - **Description:** Recursively finds every .java file under a given folder.
+    - **User story:** As a developer, I want to point the tool at my project root so I don't have to list files manually.
+    - **Inputs:** A folder path (string)
+    - **Outputs:** A list of .java file paths
+    - **OOP concepts used:** Encapsulation (internal file-walking logic hidden behind a simple method), custom exceptions for invalid paths
+    - **Complexity:** Low
+    - **Priority:** High  
   _**F2 — Method Extractor**_
-- **Description:** Parses each file and extracts every method into a structured, comparable object.
-- **User story:** As the detection engine, I need every method represented consistently so I can compare any two of them the same way.
-- **Inputs:** File contents
-- **Outputs:** A list of MethodModel objects (name, file, line number, body tokens)
-- **OOP concepts used:** Encapsulation (immutable model with private fields)
-- **Complexity:** Medium
-- **Priority:** High  
+    - **Description:** Parses each file and extracts every method into a structured, comparable object.
+    - **User story:** As the detection engine, I need every method represented consistently so I can compare any two of them the same way.
+    - **Inputs:** File contents
+    - **Outputs:** A list of MethodModel objects (name, file, line number, body tokens)
+    - **OOP concepts used:** Encapsulation (immutable model with private fields)
+    - **Complexity:** Medium
+    - **Priority:** High  
   _**F3 — Similarity Scorer**_
-- **Description:** Tokenizes each method body, normalizes variable names, and scores every method pair using Jaccard similarity (shared tokens ÷ total distinct tokens).
-- **User story:** As a developer, I want a percentage score, not just a yes/no duplicate flag, so I can judge how serious a match is.
-- **Inputs:** Two MethodModel objects
-- **Outputs:** A similarity score (0–100%)
-- **OOP concepts used:** Abstraction (SimilarityAlgorithm interface), Polymorphism (swappable implementation)
-- **Complexity:** Medium
-- **Priority:** High  
+    - **Description:** Tokenizes each method body, normalizes variable names, and scores every method pair using Jaccard similarity (shared tokens ÷ total distinct tokens).
+    - **User story:** As a developer, I want a percentage score, not just a yes/no duplicate flag, so I can judge how serious a match is.
+    - **Inputs:** Two MethodModel objects
+    - **Outputs:** A similarity score (0–100%)
+    - **OOP concepts used:** Abstraction (SimilarityAlgorithm interface), Polymorphism (swappable implementation)
+    - **Complexity:** Medium
+    - **Priority:** High  
   _**F4 — Duplicate Detector**_
-- **Description:** Compares every method against every other method, using the similarity scorer, and keeps pairs above a configurable threshold.
-- **User story:** As a developer, I only want to see matches that are actually worth my attention, not every faint similarity.
-- **Inputs:** List of MethodModel objects, a threshold value
-- **Outputs:** List of DuplicatePair objects
-- **OOP concepts used:** Composition (uses SimilarityAlgorithm without knowing its implementation)
-- **Complexity:** Medium
-- **Priority:** High  
-  _**F5 — Reporting**_
-- **Description:** Formats and prints the list of duplicate pairs.
-- **User story:** As a developer, I want to see the file, line number, and score for every match.
-- **Inputs:** List of DuplicatePair objects
-- **Outputs:** Console text (Phase 2); other formats are future work
-- **OOP concepts used:** Inheritance (AbstractReport → ConsoleReport)
-- **Complexity:** Low
-- **Priority:** High  
+    - **Description:** Compares every method against every other method, using the similarity scorer, and keeps pairs above a configurable threshold.
+    - **User story:** As a developer, I only want to see matches that are actually worth my attention, not every faint similarity.
+    - **Inputs:** List of MethodModel objects, a threshold value
+    - **Outputs:** List of DuplicatePair objects
+    - **OOP concepts used:** Composition (uses SimilarityAlgorithm without knowing its implementation)
+    - **Complexity:** Medium
+    - **Priority:** High  
+      _**F5 — Reporting**_
+    - **Description:** Formats and prints the list of duplicate pairs.
+    - **User story:** As a developer, I want to see the file, line number, and score for every match.
+    - **Inputs:** List of DuplicatePair objects
+    - **Outputs:** Console text (Phase 2); other formats are future work
+    - **OOP concepts used:** Inheritance (AbstractReport → ConsoleReport)
+    - **Complexity:** Low
+    - **Priority:** High  
   _**F6 — Error Handling**_
-- **Description:** Raises specific, self-defined exceptions for invalid or empty project paths instead of crashing.
-- **User story:** As a developer, if I point the tool at the wrong folder, I want a clear message, not a stack trace.
-- **Inputs:** An invalid or empty folder path
-- **Outputs:** A caught, user-readable error message
-- **OOP concepts used:** Custom checked exceptions (InvalidProjectPathException, NoJavaFilesFoundException)
-- **Complexity:** Low
-- **Priority:** High  
+    - **Description:** Raises specific, self-defined exceptions for invalid or empty project paths instead of crashing.
+    - **User story:** As a developer, if I point the tool at the wrong folder, I want a clear message, not a stack trace.
+    - **Inputs:** An invalid or empty folder path
+    - **Outputs:** A caught, user-readable error message
+    - **OOP concepts used:** Custom checked exceptions (InvalidProjectPathException, NoJavaFilesFoundException)
+    - **Complexity:** Low
+    - **Priority:** High  
   **Optional Features (attempted if time allows within Phase 1–2)**  
   _**O1 — Swing Desktop GUI**_
 - **Description:** Folder picker, Scan button, results table — same engine as the CLI.
@@ -154,13 +154,13 @@ A text search for calculateDiscount will never surface applyPriceReduction. A to
 - **Complexity:** Medium
 - **Priority:** Low (post-submission)  
   _**X3 — VS Code Extension (Phase 5)**_
-- **Description:** In-editor scanning and review, calling the Phase 3 API.
-- **Complexity:** High
-- **Priority:** Low (post-submission)  
+    - **Description:** In-editor scanning and review, calling the Phase 3 API.
+    - **Complexity:** High
+    - **Priority:** Low (post-submission)  
   _**X4 — Keep / Replace Decision Workflow**_
-- **Description:** Record a developer's decision per duplicate pair using the Command pattern (KeepBothDecision, MarkForReplacementDecision).
-- **Complexity:** Medium
-- **Priority:** Low (post-submission)  
+    - **Description:** Record a developer's decision per duplicate pair using the Command pattern (KeepBothDecision, MarkForReplacementDecision).
+    - **Complexity:** Medium
+    - **Priority:** Low (post-submission)  
   ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAM0lEQVR4nO3OUQmAQBBAwSdcjsu6HYxoDsEK/okwk2COmdnVGQAAf3GtalX76wkAAK/dDxFWBDkFf6+SAAAAAElFTkSuQmCC)  
   **5. User Workflow**  
   flowchart TD  
@@ -218,87 +218,79 @@ A text search for calculateDiscount will never surface applyPriceReduction. A to
   | CliRunner / MainFrame | ProjectScanner, MethodParser, DuplicateDetector, a Report | Entry points call the same pipeline |
   |   |
   | ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANklEQVR4nO3OQQmAABRAsSfYxZo/khWsYQLPJrCCNxG2BFtmZquOAAD4i3Ot7mr/egIAwGvXA4qjBdKlX6OKAAAAAElFTkSuQmCC) |
-  | **7. OOP Design** |
-  | **Encapsulation** |
-  | MethodModel and DuplicatePair expose their data only through getters; fields are private and set once through the constructor. This prevents any part of the system from silently mutating a method's recorded data after it has been scanned. |
-  | **Abstraction** |
-  | SimilarityAlgorithm is an interface with a single method, compare(MethodModel a, MethodModel b): double. DuplicateDetector depends only on this interface, never on a specific scoring implementation — it does not need to know _how_ similarity is computed to use it. |
-  | **Inheritance** |
-  | AbstractReport holds report logic shared by every output format (a header, a footer, iterating the duplicate list); ConsoleReport extends it and supplies only the console-specific formatting. Any future report format (JSON, HTML) extends the same base class instead of duplicating shared logic. |
-  | **Polymorphism** |
-  | DuplicateDetector calls similarityAlgorithm.compare(...) through the interface reference. At runtime, this can resolve to JaccardSimilarity or any future implementation, without a single line of DuplicateDetector changing. |
-  | **Interfaces** |
-  | SimilarityAlgorithm is the only interface in Phase 1–2, deliberately — one clean, well-justified use of an interface is stronger for a course demo than several interfaces added just to check a box. |
-  | **Class diagram** |
-  | classDiagram |
-  |      class MethodModel { |
-  |          -String methodName |
-  |          -String filePath |
-  |          -int lineNumber |
-  |          -List~~String~~ bodyTokens |
-  |          +getMethodName() String |
-  |          +getFilePath() String |
-  |          +getLineNumber() int |
-  |          +getBodyTokens() List~~String~~ |
-  |      } |
-  |   |
-  |      class DuplicatePair { |
-  |          -MethodModel first |
-  |          -MethodModel second |
-  |          -double similarityScore |
-  |          +getFirst() MethodModel |
-  |          +getSecond() MethodModel |
-  |          +getSimilarityScore() double |
-  |      } |
-  |   |
-  |      class SimilarityAlgorithm { |
-  |          <<interface>> |
-  |          +compare(MethodModel a, MethodModel b) double |
-  |      } |
-  |   |
-  |      class JaccardSimilarity { |
-  |          +compare(MethodModel a, MethodModel b) double |
-  |      } |
-  |   |
-  |      class DuplicateDetector { |
-  |          -SimilarityAlgorithm algorithm |
-  |          -double threshold |
-  |          +findDuplicates(List~~MethodModel~~) List~~DuplicatePair~~ |
-  |      } |
-  |   |
-  |      class AbstractReport { |
-  |          <<abstract>> |
-  |          #List~~DuplicatePair~~ results |
-  |          +generate()\* |
-  |          #printHeader() |
-  |      } |
-  |   |
-  |      class ConsoleReport { |
-  |          +generate() |
-  |      } |
-  |   |
-  |      class InvalidProjectPathException { |
-  |          +InvalidProjectPathException(String message) |
-  |      } |
-  |   |
-  |      class NoJavaFilesFoundException { |
-  |          +NoJavaFilesFoundException(String message) |
-  |      } |
-  |   |
-  |      SimilarityAlgorithm < | .. JaccardSimilarity |
-  |      AbstractReport < | -- ConsoleReport |
-  |      DuplicateDetector --> SimilarityAlgorithm |
-  |      DuplicateDetector --> DuplicatePair |
-  |      DuplicatePair --> MethodModel |
-  |      Exception < | -- InvalidProjectPathException |
-  |      Exception < | -- NoJavaFilesFoundException |
-  |   |
-  | **Why these decisions were made:** |
-- One interface (SimilarityAlgorithm), not several, because the project only has one axis of variation (how similarity is scored) — adding interfaces for things that never vary would be complexity without purpose.
-- AbstractReport is abstract, not an interface, because report types share actual implemented behavior (the header), not just a method contract.
-- Custom exceptions extend the standard checked Exception, not RuntimeException, so callers are forced to handle them explicitly — appropriate for input errors the caller should always anticipate.  
+   **7. OOP Design** 
+   **Encapsulation** 
+    MethodModel and DuplicatePair expose their data only through getters; fields are private and set once through the constructor. This prevents any part of the system from silently mutating a method's recorded data after it has been scanned. 
+   **Abstraction** 
+   SimilarityAlgorithm is an interface with a single method, compare(MethodModel a, MethodModel b): double. DuplicateDetector depends only on this interface, never on a specific scoring implementation — it does not need to know _how_ similarity is computed to use it. 
+   **Inheritance** 
+   AbstractReport holds report logic shared by every output format (a header, a footer, iterating the duplicate list); ConsoleReport extends it and supplies only the console-specific formatting. Any future report format (JSON, HTML) extends the same base class instead of duplicating shared logic. 
+   **Polymorphism** 
+   DuplicateDetector calls similarityAlgorithm.compare(...) through the interface reference. At runtime, this can resolve to JaccardSimilarity or any future implementation, without a single line of DuplicateDetector changing. 
+   **Interfaces** 
+   SimilarityAlgorithm is the only interface in Phase 1–2, deliberately — one clean, well-justified use of an interface is stronger for a course demo than several interfaces added just to check a box. 
+   **Class diagram** 
+   classDiagram 
+        class MethodModel { 
+            -String methodName 
+            -String filePath 
+            -int lineNumber 
+            -List~~String~~ bodyTokens 
+            +getMethodName() String 
+            +getFilePath() String 
+            +getLineNumber() int 
+            +getBodyTokens() List~~String~~ 
+        } 
+     
+        class DuplicatePair { 
+            -MethodModel first 
+            -MethodModel second 
+            -double similarityScore 
+            +getFirst() MethodModel 
+            +getSecond() MethodModel 
+            +getSimilarityScore() double 
+        } 
+        class SimilarityAlgorithm { 
+            <<interface>> 
+            +compare(MethodModel a, MethodModel b) double 
+        } 
+        class JaccardSimilarity { 
+            +compare(MethodModel a, MethodModel b) double 
+        } 
+        class DuplicateDetector { 
+            -SimilarityAlgorithm algorithm 
+            -double threshold 
+            +findDuplicates(List~~MethodModel~~) List~~DuplicatePair~~ 
+        } 
+     
+        class AbstractReport { 
+            <<abstract>> 
+            #List~~DuplicatePair~~ results 
+            +generate()\* 
+            #printHeader() 
+        } 
+        class ConsoleReport { 
+            +generate() 
+        } 
+        class InvalidProjectPathException { 
+            +InvalidProjectPathException(String message) 
+        }    
+        class NoJavaFilesFoundException { 
+            +NoJavaFilesFoundException(String message) 
+        } 
+        SimilarityAlgorithm <  .. JaccardSimilarity 
+        AbstractReport <  -- ConsoleReport 
+        DuplicateDetector --> SimilarityAlgorithm
+        DuplicateDetector --> DuplicatePair 
+        DuplicatePair --> MethodModel 
+        Exception <  -- InvalidProjectPathException 
+        Exception <  -- NoJavaFilesFoundException 
+**Why these decisions were made:** 
+    - One interface (SimilarityAlgorithm), not several, because the project only has one axis of variation (how similarity is scored) — adding interfaces for things that never vary would be complexity without purpose.
+    - AbstractReport is abstract, not an interface, because report types share actual implemented behavior (the header), not just a method contract.
+    - Custom exceptions extend the standard checked Exception, not RuntimeException, so callers are forced to handle them explicitly — appropriate for input errors the caller should always anticipate.  
   ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OMQ2AABAAsSNBCUrfDqrYGVDAgAU2QtIq6DIzW7UHAMBfHGt1V+fXEwAAXrseHCQGBEuErVgAAAAASUVORK5CYII=)  
-  **8. Technology Stack**
+**8. Technology Stack**
   | | | |
   | -------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
   | **Layer** | **Technology** | **Why chosen** |
@@ -431,131 +423,99 @@ smart-duplicate-detector/
   | Sprint 3 | Desktop GUI | Phase 3 tasks | Swing app matches CLI output | Any available active member | GUI does not freeze during scan |
   | Sprint 4 | Testing & docs | Phase 4 tasks | Submission-ready repository | Whole team | Every member can explain every class in a mock demo |
   |   |
-  | **12. Implementation Guide** |
-  | This guide assumes no team member has built this exact kind of tool before. Follow it in order — each step depends on the previous one working. |
-  | **Step 1 — Project setup** |
-  | **Goal:** A Maven project that compiles |
-  |   |
-  |  **Files to create:** pom.xml |
-  |   |
-  |  **Classes:** None yet |
-  |   |
-  |  **Testing:** mvn compile succeeds |
-  |   |
-  |  **Expected result:** An empty but valid Java project |
-  | **Step 2 — Model classes** |
-  | **Goal:** A way to represent a method in code |
-  |   |
-  |  **Files to create:** model/MethodModel.java, model/DuplicatePair.java |
-  |   |
-  |  **Classes/methods:** |
-  | public class MethodModel { |
-  |      public MethodModel(String methodName, String filePath, int lineNumber, List<String> bodyTokens) { ... } |
-  |      public String getMethodName() { ... } |
-  |      public String getFilePath() { ... } |
-  |      public int getLineNumber() { ... } |
-  |      public List<String> getBodyTokens() { ... } |
-  |  } |
-  |   |
-  | **Testing:** A JUnit test constructs a MethodModel and checks every getter returns what was passed in |
-  |   |
-  |  **Expected result:** A compiling, immutable data class |
-  | **Step 3 — Custom exceptions** |
-  | **Goal:** Meaningful errors instead of crashes |
-  |   |
-  |  **Files to create:** exceptions/InvalidProjectPathException.java, exceptions/NoJavaFilesFoundException.java |
-  |   |
-  |  **Classes/methods:** Each extends Exception, with a constructor taking a String message |
-  |   |
-  |  **Testing:** A JUnit test asserts the exception is thrown for a non-existent path |
-  |   |
-  |  **Expected result:** Two working custom exception types |
-  | **Step 4 — Project scanner** |
-  | **Goal:** Find every .java file under a folder |
-  |   |
-  |  **Files to create:** core/ProjectScanner.java |
-  |   |
-  |  **Classes/methods:** public List<File> scan(String rootPath) throws InvalidProjectPathException, NoJavaFilesFoundException |
-  |   |
-  |  **Testing:** Run against a folder with 3 known .java files, assert 3 are found |
-  |   |
-  |  **Expected result:** A working recursive file finder |
-  | **Step 5 — Method parser** |
-  | **Goal:** Turn file contents into MethodModel objects |
-  |   |
-  |  **Files to create:** core/MethodParser.java |
-  |   |
-  |  **Classes/methods:** public List<MethodModel> parse(File javaFile) |
-  |   |
-  |  **Testing:** Run against a file with 2 known methods, assert 2 MethodModel objects are produced with correct line numbers |
-  |   |
-  |  **Expected result:** A working method extractor |
-  | **Step 6 — Similarity algorithm** |
-  | **Goal:** Score how similar two methods are |
-  |   |
-  |  **Files to create:** core/SimilarityAlgorithm.java (interface), core/JaccardSimilarity.java |
-  |   |
-  |  **Classes/methods:** double compare(MethodModel a, MethodModel b) |
-  |   |
-  |  **Testing:** Compare two identical methods (expect ~100%) and two unrelated methods (expect a low score) |
-  |   |
-  |  **Expected result:** A working, testable scoring function |
-  | **Step 7 — Duplicate detector** |
-  | **Goal:** Find all pairs above a threshold |
-  |   |
-  |  **Files to create:** core/DuplicateDetector.java |
-  |   |
-  |  **Classes/methods:** public List<DuplicatePair> findDuplicates(List<MethodModel> methods, double threshold) |
-  |   |
-  |  **Testing:** Run against a known set of methods containing one planted duplicate pair, assert exactly one pair is returned |
-  |   |
-  |  **Expected result:** The full detection pipeline working end-to-end |
-  | **Step 8 — Reporting** |
-  | **Goal:** Print results |
-  |   |
-  |  **Files to create:** report/AbstractReport.java, report/ConsoleReport.java |
-  |   |
-  |  **Testing:** Run against known DuplicatePair objects, check console output contains the expected file names and scores |
-  |   |
-  |  **Expected result:** Human-readable output |
-  | **Step 9 — CLI entry point** |
-  | **Goal:** Tie everything together |
-  |   |
-  |  **Files to create:** cli/CliRunner.java, cli/Main.java |
-  |   |
-  |  **Testing:** Run java -jar target/sdd.jar --path ./test-project against a real folder |
-  |   |
-  |  **Expected result:** A working command-line tool |
-  | **Step 10 — Swing GUI** |
-  | **Goal:** A visual alternative to the CLI |
-  |   |
-  |  **Files to create:** gui/MainFrame.java, gui/ResultsPanel.java |
-  |   |
-  |  **Testing:** Manual — pick a folder, click Scan, confirm results match the CLI's output for the same folder |
-  |   |
-  |  **Expected result:** A working desktop application |
-  | ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OMQ2AABAAsSPBCj5fFyM6mJHAjAU2QtIq6DIzW7UHAMBfnGt1V8fXEwAAXrsexOEF35f1aEgAAAAASUVORK5CYII=) |
-  | **13. Coding Standards** |
+  **12. Implementation Guide** 
+   This guide assumes no team member has built this exact kind of tool before. Follow it in order — each step depends on the previous one working. 
+  **Step 1 — Project setup** 
+   **Goal:** A Maven project that compiles 
+     
+    **Files to create:** pom.xml 
+    **Classes:** None yet 
+    **Testing:** mvn compile succeeds 
+    **Expected result:** An empty but valid Java project 
+  **Step 2 — Model classes** 
+   **Goal:** A way to represent a method in code 
+    **Files to create:** model/MethodModel.java, model/DuplicatePair.java 
+    **Classes/methods:** 
+   public class MethodModel { 
+        public MethodModel(String methodName, String filePath, int lineNumber, List<String> bodyTokens) { ... } 
+        public String getMethodName() { ... } 
+        public String getFilePath() { ... } 
+        public int getLineNumber() { ... } 
+        public List<String> getBodyTokens() { ... } 
+    } 
+     
+   **Testing:** A JUnit test constructs a MethodModel and checks every getter returns what was passed in 
+  
+    **Expected result:** A compiling, immutable data class 
+  **Step 3 — Custom exceptions** 
+   **Goal:** Meaningful errors instead of crashes 
+   **Files to create:** exceptions/InvalidProjectPathException.java, exceptions/NoJavaFilesFoundException.java 
+    **Classes/methods:** Each extends Exception, with a constructor taking a String message 
+    **Testing:** A JUnit test asserts the exception is thrown for a non-existent path 
+    **Expected result:** Two working custom exception types 
+**Step 4 — Project scanner** 
+   **Goal:** Find every .java file under a folder 
+   **Files to create:** core/ProjectScanner.java 
+   **Classes/methods:** public List<File> scan(String rootPath) throws InvalidProjectPathException, NoJavaFilesFoundException 
+   **Testing:** Run against a folder with 3 known .java files, assert 3 are found 
+   **Expected result:** A working recursive file finder 
+**Step 5 — Method parser** 
+  **Goal:** Turn file contents into MethodModel objects 
+  **Files to create:** core/MethodParser.java 
+  **Classes/methods:** public List<MethodModel> parse(File javaFile) 
+  **Testing:** Run against a file with 2 known methods, assert 2 MethodModel objects are produced with correct line numbers 
+  **Expected result:** A working method extractor 
+  **Step 6 — Similarity algorithm** 
+  **Goal:** Score how similar two methods are 
+
+  **Files to create:** core/SimilarityAlgorithm.java (interface), core/JaccardSimilarity.java 
+  **Classes/methods:** double compare(MethodModel a, MethodModel b) 
+  **Testing:** Compare two identical methods (expect ~100%) and two unrelated methods (expect a low score) 
+  
+  **Expected result:** A working, testable scoring function 
+**Step 7 — Duplicate detector** 
+  **Goal:** Find all pairs above a threshold 
+  **Files to create:** core/DuplicateDetector.java 
+  
+  **Classes/methods:** public List<DuplicatePair> findDuplicates(List<MethodModel> methods, double threshold) 
+  **Testing:** Run against a known set of methods containing one planted duplicate pair, assert exactly one pair is returned 
+  **Expected result:** The full detection pipeline working end-to-end 
+**Step 8 — Reporting** 
+  **Goal:** Print results 
+  **Files to create:** report/AbstractReport.java, report/ConsoleReport.java 
+  **Testing:** Run against known DuplicatePair objects, check console output contains the expected file names and scores 
+  **Expected result:** Human-readable output 
+**Step 9 — CLI entry point** 
+  **Goal:** Tie everything together 
+  **Files to create:** cli/CliRunner.java, cli/Main.java 
+  **Testing:** Run java -jar target/sdd.jar --path ./test-project against a real folder 
+  **Expected result:** A working command-line tool 
+**Step 10 — Swing GUI** 
+  **Goal:** A visual alternative to the CLI 
+  **Files to create:** gui/MainFrame.java, gui/ResultsPanel.java 
+  **Testing:** Manual — pick a folder, click Scan, confirm results match the CLI's output for the same folder 
+  **Expected result:** A working desktop application 
+   ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OMQ2AABAAsSPBCj5fFyM6mJHAjAU2QtIq6DIzW7UHAMBfnGt1V8fXEwAAXrsexOEF35f1aEgAAAAASUVORK5CYII=) 
+**13. Coding Standards** 
   | | | |
-  | - | - | - |
   | **Element** | **Convention** | **Example** |
   | Classes | PascalCase | DuplicateDetector |
   | Methods, variables | camelCase | findDuplicates() |
   | Constants | UPPER_SNAKE_CASE | DEFAULT_THRESHOLD |
   | Packages | all lowercase | sdd.core |
   |   |
-  | **Comments & documentation:** Every public class and public method gets a short Javadoc comment stating what it does — not restating the method name, but explaining intent where it isn't obvious. |
-  | **Error handling:** Never catch an exception silently. Every catch block either handles the error meaningfully (a user-facing message) or rethrows it — never an empty catch block. |
-  | **Exception handling:** Use the project's custom exceptions for domain-specific failures (bad path, no files found). Use standard exceptions only for genuinely generic failures. |
-  | ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OQQ2AQBAAsSE5CbzRujLwhwQMYIEfIWkVdJuZozoDAOAvrlWtav96AgDAa/cDEXQEKquakOYAAAAASUVORK5CYII=) |
-  | **14. Git Workflow** |
-- **Branches:**main (protected, no direct commits) → dev (integration branch) → feature/<package>-<short-description> (individual work)
-- **Commit messages:** describe _what changed_, e.g. Add MethodModel with immutable fields and constructor — never just update or fix
-- **Pull requests:** every PR requires at least one other team member's approval before merging
-- **Code review:** reviewer checks the code compiles, has a test if it's a core/model class, and matches the architecture in Section 6
-- **Merge process:** feature branch → dev (after review) → main (only at a stable milestone, e.g. end of a Phase)  
-  ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OQQmAABRAsSd4NIGhrOTvaQBrWMGbCFuCLTOzV2cAAPzFvVZbdXw9AQDgtesBhYQEO+64Y8AAAAAASUVORK5CYII=)  
-  **15. Team Responsibilities**  
+  **Comments & documentation:** Every public class and public method gets a short Javadoc comment stating what it does — not restating the method name, but explaining intent where it isn't obvious. 
+  **Error handling:** Never catch an exception silently. Every catch block either handles the error meaningfully (a user-facing message) or rethrows it — never an empty catch block. 
+  **Exception handling:** Use the project's custom exceptions for domain-specific failures (bad path, no files found). Use standard exceptions only for genuinely generic failures. 
+  ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OQQ2AQBAAsSE5CbzRujLwhwQMYIEfIWkVdJuZozoDAOAvrlWtav96AgDAa/cDEXQEKquakOYAAAAASUVORK5CYII=) 
+**14. Git Workflow** 
+  - **Branches:**main (protected, no direct commits) → dev (integration branch) → feature/<package>-<short-description> (individual work)
+  - **Commit messages:** describe _what changed_, e.g. Add MethodModel with immutable fields and constructor — never just update or fix
+  - **Pull requests:** every PR requires at least one other team member's approval before merging
+  - **Code review:** reviewer checks the code compiles, has a test if it's a core/model class, and matches the architecture in Section 6
+  - **Merge process:** feature branch → dev (after review) → main (only at a stable milestone, e.g. end of a Phase)  
+    ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OQQmAABRAsSd4NIGhrOTvaQBrWMGbCFuCLTOzV2cAAPzFvVZbdXw9AQDgtesBhYQEO+64Y8AAAAAASUVORK5CYII=)  
+**15. Team Responsibilities**  
   Given uneven participation across the team, roles are described as **areas of ownership**, not rigid full-time assignments — anyone active picks up the next unclaimed task in their area.
   | | | |
   | ------------------------ | ------------------------------------------------------------------------- | ---------------- |
@@ -581,7 +541,7 @@ smart-duplicate-detector/
 - A planted duplicate pair is correctly found in a multi-file test project
 - GUI and CLI produce the same result for the same input  
   ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OMQ2AABAAsSNhwgJOUPcjIpnRgQU2QtIq6DIze3UGAMBf3Gu1VcfXEwAAXrseaJEEL8XMiYMAAAAASUVORK5CYII=)  
-  **17. Risks**
+**17. Risks**
   | | |
   | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
   | **Risk** | **Mitigation** |
@@ -590,19 +550,20 @@ smart-duplicate-detector/
   | False positives/negatives in similarity scoring | Configurable threshold, tested against known cases before relying on it in the demo |
   |   |
   | ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANklEQVR4nO3OQQmAABRAsSfYxZq/kR2MYQLPJrCCNxG2BFtmZquOAAD4i3Ot7mr/egIAwGvXA5RoBdJGGuuWAAAAAElFTkSuQmCC) |
-  | **18. Future Improvements** |
-- REST API, website, and VS Code extension (Phases 5–7, Section 10)
-- Keep/Replace decision workflow using the Command pattern
-- A second similarity algorithm (structural comparison) selectable via the existing SimilarityAlgorithm interface
-- Additional report formats (JSON, HTML) via the existing AbstractReport base class  
-  ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OQQmAABRAsSfYxKK/kJXEkyE8WcGbCFuCLTOzVXsAAPzFsVZ3dX4cAQDgvesB/vEF9H9odtUAAAAASUVORK5CYII=)  
-  **19. Scope Definition**  
+
+**18. Future Improvements** 
+  - REST API, website, and VS Code extension (Phases 5–7, Section 10)
+  - Keep/Replace decision workflow using the Command pattern
+  - A second similarity algorithm (structural comparison) selectable via the existing SimilarityAlgorithm interface
+  - Additional report formats (JSON, HTML) via the existing AbstractReport base class  
+    ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OQQmAABRAsSfYxKK/kJXEkyE8WcGbCFuCLTOzVXsAAPzFsVZ3dX4cAQDgvesB/vEF9H9odtUAAAAASUVORK5CYII=)  
+**19. Scope Definition**  
   **IN SCOPE (this submission)**
-- Scanning a local Java project folder
-- Extracting methods and scoring similarity as a percentage
-- CLI and Swing GUI, sharing one engine
-- Custom exception handling
-- JUnit test suite
+  - Scanning a local Java project folder
+  - Extracting methods and scoring similarity as a percentage
+  - CLI and Swing GUI, sharing one engine
+  - Custom exception handling
+  - JUnit test suite
 
 **FUTURE SCOPE (realistic, but explicitly not part of this submission)**
 
@@ -614,16 +575,16 @@ smart-duplicate-detector/
 - Supporting any language other than Java
   _**This section exists specifically to prevent feature creep.**_ _ If a task doesn't appear under "IN SCOPE," it does not get worked on before Phase 4 is complete and demo-ready, no matter how good the idea is._  
   ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANklEQVR4nO3OMQ2AABAAsSNBACPykMH4NpGACyywEZJWQZeZ2aszAAD+4l6rrTo+jgAA8N71AL/CBEiG5xPoAAAAAElFTkSuQmCC)  
-  **20. Deliverables**  
-  When Phase 4 (Section 10) is complete, the following must exist:
-- A working, runnable .jar file supporting both --path (CLI) and no-argument (GUI) modes
-- Full source code in the GitHub repository, organized per Section 9
-- This master document, the SRS, and the README, all consistent with the actual code
-- A JUnit test suite covering core and model
-- A sample test project with at least one planted duplicate, used for the demo
-- Every team member able to explain any class in the codebase on request  
-  ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OMQ2AABAAsSNBCkJfE1pYGfHAiAU2QtIq6DIzW7UHAMBfnGt1V8fXEwAAXrse4dwF6o2O55YAAAAASUVORK5CYII=)  
-  **21. Final Architecture Diagram**  
+**20. Deliverables**  
+When Phase 4 (Section 10) is complete, the following must exist:
+  - A working, runnable .jar file supporting both --path (CLI) and no-argument (GUI) modes
+  - Full source code in the GitHub repository, organized per Section 9
+  - This master document, the SRS, and the README, all consistent with the actual code
+  - A JUnit test suite covering core and model
+  - A sample test project with at least one planted duplicate, used for the demo
+  - Every team member able to explain any class in the codebase on request  
+    ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OMQ2AABAAsSNBCkJfE1pYGfHAiAU2QtIq6DIzW7UHAMBfnGt1V8fXEwAAXrse4dwF6o2O55YAAAAASUVORK5CYII=)  
+**21. Final Architecture Diagram**  
   graph TB  
        subgraph Engine["Java Core Engine — fully custom, minimal dependencies"]  
            Scanner[ProjectScanner]  
@@ -661,7 +622,7 @@ smart-duplicate-detector/
        API -.-> Ext
      
   ![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANklEQVR4nO3OQQmAABRAsSfYxZo/kSGMYQLPJrCCNxG2BFtmZquOAAD4i3Ot7mr/egIAwGvXA4qrBdGuSdJuAAAAAElFTkSuQmCC)  
-  **22. Appendix**  
+**22. Appendix**  
   **Glossary**
   | | |
   | -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -672,10 +633,10 @@ smart-duplicate-detector/
   | Threshold | The minimum similarity score required for a pair to be reported as a duplicate |
   | Adapter (in this document) | A thin component (CLI, GUI, API) that calls the core engine without containing its own detection logic |
   |   |
-  | **Resources** |
-- JUnit 5 documentation — https://junit.org/junit5/docs/current/user-guide/
-- Java Swing tutorial (Oracle) — https://docs.oracle.com/javase/tutorial/uiswing/  
-  **Useful links**
-- Project repository: https://github.com/fetehadin/smart-duplicate-detector
-- SRS: docs/SRS.md
-- This document: docs/MASTER_PROJECT_DOCUMENT.md
+**Resources** 
+  - JUnit 5 documentation — https://junit.org/junit5/docs/current/user-guide/
+  - Java Swing tutorial (Oracle) — https://docs.oracle.com/javase/tutorial/uiswing/  
+**Useful links**
+  - Project repository: https://github.com/fetehadin/smart-duplicate-detector
+
+  - This document: docs/MASTER_PROJECT_DOCUMENT.md
