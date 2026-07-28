@@ -1,6 +1,6 @@
 # Smart Duplicate Detector
 
-![Smart Duplicate Detector GUI](image_eb7a81.png)
+![Smart Duplicate Detector GUI](image.png)
 
 ## Overview
 
@@ -73,7 +73,7 @@ smart-duplicate-detector/
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/smart-duplicate-detector.git
+git clone https://github.com/fetehadin/smart-duplicate-detector.git
 cd smart-duplicate-detector
 mvn clean package
 ```
