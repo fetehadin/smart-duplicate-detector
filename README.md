@@ -24,11 +24,10 @@ Traditional duplicate detectors often rely on raw string matching or tokenizatio
 
 ## Features
 
-- Recursive scan of a Java project for `.java` files.
-- Structural extraction of every method into a comparable AST model.
-- Highly accurate similarity scoring via `LevenshteinSimilarity`.
-- **Standalone Desktop App:** Native-looking Java Swing GUI with real-time background scanning (`SwingWorker`) and dynamic threshold adjustment.
-- **Command-line (CLI):** Headless entry point sharing the exact same detection engine.
+- **Global CLI Tool:** Wrapped in NPM for a frictionless 1-step installation and a global `sdd` command.
+- **Modern Desktop App:** Sleek, dark-themed Java Swing GUI powered by FlatLaf with real-time background scanning (`SwingWorker`).
+- **High Precision:** Structural extraction of every method into a comparable AST model.
+- **Smart Scoring:** Highly accurate similarity scoring via `LevenshteinSimilarity`.
 - Custom exception handling for invalid or empty project paths.
 - *(Planned)* Scan a public GitHub repository directly by URL instead of a local path.
 
@@ -39,9 +38,9 @@ Traditional duplicate detectors often rely on raw string matching or tokenizatio
 | Layer | Technology |
 | :--- | :--- |
 | **Language** | Java 17 |
-| **Build** | Maven |
+| **Build & Distribution** | Maven, Node.js / NPM (CLI Wrapper) |
 | **Parsing** | JavaParser |
-| **Desktop GUI** | Java Swing |
+| **Desktop GUI** | Java Swing + FlatLaf (Modern Dark Theme) |
 | **Backend / API** | Javalin (REST, JSON via Jackson) |
 | **Testing** | JUnit 5 |
 
@@ -51,50 +50,76 @@ Traditional duplicate detectors often rely on raw string matching or tokenizatio
 
 ```text
 smart-duplicate-detector/
-├── model/        MethodModel, DuplicatePair
-├── core/         ProjectScanner, AstMethodParser, SimilarityAlgorithm, LevenshteinSimilarity, DuplicateDetector
-├── gui/          MainFrame (Swing Desktop App)
-├── report/       AbstractReport, ConsoleReport
-├── exceptions/   InvalidProjectPathException, NoJavaFilesFoundException
-├── api/          ApiServer (REST endpoints)
-├── cli/          CliRunner
-└── resources/    (web frontend / static files)
+├── package.json & index.js   # NPM Bridge for global 'sdd' command
+├── model/                    # MethodModel, DuplicatePair
+├── core/                     # ProjectScanner, AstMethodParser, SimilarityAlgorithm...
+├── gui/                      # MainFrame (Swing Desktop App)
+├── report/                   # AbstractReport, ConsoleReport
+├── exceptions/               # InvalidProjectPathException, NoJavaFilesFoundException
+├── api/                      # ApiServer (REST endpoints)
+├── cli/                      # CliRunner
+└── resources/                # (web frontend / static files)
 ```
 
 ---
 
-## Getting Started
+## 🚀 Getting Started (End Users)
+
+The easiest way to use Smart Duplicate Detector is via our NPM package, which automatically links the `sdd` command to your system.
 
 ### Prerequisites
 
 - Java 17+
-- Maven 3.8+
+- Node.js & NPM
 
-### Clone the Repository
+### Install Globally
 
 ```bash
-git clone https://github.com/fetehadin/smart-duplicate-detector.git
-cd smart-duplicate-detector
-mvn clean package
+npm install -g smart-duplicate-detector
+```
+
+### Launch the UI
+
+To launch the modern FlatLaf desktop dashboard, open your terminal anywhere and type:
+
+```bash
+sdd
+```
+
+### Run via CLI (Headless)
+
+To run a silent scan in your terminal without opening the GUI:
+
+```bash
+sdd --path ./path/to/project --threshold 0.80
 ```
 
 ---
 
-## Run — Desktop GUI (Default Fat-JAR)
+## 🛠️ Developer Setup (Build from Source)
+
+If you want to modify the Java engine or build the Fat-JAR yourself:
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/fetehadin/smart-duplicate-detector.git
+cd smart-duplicate-detector
+```
+
+### 2. Build the Engine
+
+```bash
+mvn clean package
+```
+
+### 3. Run Locally
 
 ```bash
 java -jar target/smart-duplicate-detector.jar
 ```
 
-The GUI will launch automatically. Select your project directory, adjust the similarity threshold slider, and click **Scan**.
-
----
-
-## Run — CLI
-
-```bash
-java -cp target/smart-duplicate-detector.jar com.yourteam.sdd.cli.CliRunner --path ./path/to/project --threshold 0.80
-```
+*Alternatively, run `npm link` in the root folder to test the global `sdd` command locally!*
 
 ---
 
@@ -120,9 +145,9 @@ Scan complete. 2 duplicate pairs found.
 
 ## Known Limitations
 
-- Comparison is all-pairs (`O(n²)`)—fine for a single project, not intended for large monorepos.
-- Only structural/token similarity is considered—no control-flow or semantic analysis.
-- Currently scans a path accessible to the machine running the application; GitHub-repo scanning (clone + scan by URL) is planned.
+- Comparison is all-pairs (`O(n²)`): Fine for a single project, but not intended for massive, multi-gigabyte monorepos.
+- Only structural/token similarity is considered: No control-flow or semantic analysis yet.
+- GitHub-repo scanning (clone + scan by URL) is planned for a future release.
 
 ---
 
