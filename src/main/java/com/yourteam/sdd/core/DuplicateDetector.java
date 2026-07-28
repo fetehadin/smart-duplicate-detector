@@ -7,43 +7,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Runs an all-pairs comparison over a list of methods using a
- * pluggable SimilarityAlgorithm and returns pairs whose score
- * meets or exceeds the given threshold.
- *
- * All-pairs is O(n^2); fine for a single project's method count,
- * but if this ever needs to scale to huge monorepos, bucket by
- * a cheap pre-filter (e.g. token-count range) before comparing.
+ * Compares all methods against each other using a provided similarity algorithm
+ * and flags pairs that meet or exceed a configurable threshold score.
  */
 public class DuplicateDetector {
 
     private final SimilarityAlgorithm algorithm;
-    private final double threshold;
 
-    public DuplicateDetector(SimilarityAlgorithm algorithm, double threshold) {
-        if (threshold < 0.0 || threshold > 1.0) {
-            throw new IllegalArgumentException("threshold must be between 0.0 and 1.0");
-        }
+    public DuplicateDetector(SimilarityAlgorithm algorithm) {
         this.algorithm = algorithm;
-        this.threshold = threshold;
     }
 
-    public List<DuplicatePair> findDuplicates(List<MethodModel> methods) {
+    public List<DuplicatePair> findDuplicates(List<MethodModel> methods, double threshold) {
         List<DuplicatePair> duplicates = new ArrayList<>();
 
-        for (int i = 0; i < methods.size(); i++) {
-            for (int j = i + 1; j < methods.size(); j++) {
-                MethodModel a = methods.get(i);
-                MethodModel b = methods.get(j);
+        int size = methods.size();
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
+                MethodModel methodA = methods.get(i);
+                MethodModel methodB = methods.get(j);
 
-                double score = algorithm.score(a, b);
+                if (methodA.getFilePath().equals(methodB.getFilePath()) && 
+                    methodA.getLineNumber() == methodB.getLineNumber()) {
+                    continue;
+                }
+
+                double score = algorithm.compare(methodA, methodB);
+
                 if (score >= threshold) {
-                    duplicates.add(new DuplicatePair(a, b, score));
+                    duplicates.add(new DuplicatePair(methodA, methodB, score));
                 }
             }
         }
 
-        duplicates.sort((p1, p2) -> Double.compare(p2.getSimilarityScore(), p1.getSimilarityScore()));
         return duplicates;
     }
 }

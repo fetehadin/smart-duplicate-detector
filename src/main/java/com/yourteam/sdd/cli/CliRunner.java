@@ -1,8 +1,8 @@
 package com.yourteam.sdd.cli;
 
 import com.yourteam.sdd.core.DuplicateDetector;
-import com.yourteam.sdd.core.JaccardSimilarity;
-import com.yourteam.sdd.core.MethodParser;
+import com.yourteam.sdd.core.LevenshteinSimilarity;
+import com.yourteam.sdd.core.AstMethodParser;
 import com.yourteam.sdd.core.ProjectScanner;
 import com.yourteam.sdd.exceptions.InvalidProjectPathException;
 import com.yourteam.sdd.exceptions.NoJavaFilesFoundException;
@@ -10,8 +10,7 @@ import com.yourteam.sdd.model.DuplicatePair;
 import com.yourteam.sdd.model.MethodModel;
 import com.yourteam.sdd.report.ConsoleReport;
 
-
-import java.nio.file.Path;
+import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,13 +52,15 @@ public class CliRunner {
             throws InvalidProjectPathException, NoJavaFilesFoundException {
 
         ProjectScanner scanner = new ProjectScanner();
-        MethodParser parser = new MethodParser();
-        DuplicateDetector detector = new DuplicateDetector(new JaccardSimilarity(), threshold);
+        AstMethodParser parser = new AstMethodParser();
+        // The algorithm goes in the constructor, the threshold goes in the method call
+        DuplicateDetector detector = new DuplicateDetector(new LevenshteinSimilarity());
         ConsoleReport report = new ConsoleReport();
 
         report.reportScanStart(path);
 
-        List<Path> files = scanner.scan(path);
+        // Uses java.io.File to match the ProjectScanner and AstMethodParser updates
+        List<File> files = scanner.scan(path);
         List<MethodModel> methods = parser.parseFiles(files);
 
         Set<String> distinctFiles = new HashSet<>();
@@ -67,7 +68,8 @@ public class CliRunner {
 
         report.reportMethodsFound(methods.size(), distinctFiles.size());
 
-        List<DuplicatePair> duplicates = detector.findDuplicates(methods);
+        // Pass the parsed methods and the dynamic threshold
+        List<DuplicatePair> duplicates = detector.findDuplicates(methods, threshold);
         report.reportDuplicates(duplicates);
     }
 }

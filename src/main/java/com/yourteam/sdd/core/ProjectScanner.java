@@ -3,48 +3,38 @@ package com.yourteam.sdd.core;
 import com.yourteam.sdd.exceptions.InvalidProjectPathException;
 import com.yourteam.sdd.exceptions.NoJavaFilesFoundException;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-/**
- * Recursively finds all .java files under a given project root.
- */
 public class ProjectScanner {
-
-    /**
-     * @param projectPath root directory to scan
-     * @return list of .java file paths found under projectPath
-     * @throws InvalidProjectPathException if the path doesn't exist or isn't a directory
-     * @throws NoJavaFilesFoundException   if the scan finds zero .java files
-     */
-    public List<Path> scan(String projectPath)
-            throws InvalidProjectPathException, NoJavaFilesFoundException {
-
-        Path root = Paths.get(projectPath);
-
-        if (!Files.exists(root) || !Files.isDirectory(root)) {
-            throw new InvalidProjectPathException(projectPath);
+    
+    public List<File> scan(String rootPath) throws InvalidProjectPathException, NoJavaFilesFoundException {
+        File root = new File(rootPath);
+        if (!root.exists() || !root.isDirectory()) {
+            throw new InvalidProjectPathException("Invalid project path: " + rootPath);
         }
-
-        List<Path> javaFiles;
-        try (Stream<Path> walk = Files.walk(root)) {
-            javaFiles = walk
-                    .filter(Files::isRegularFile)
-                    .filter(p -> p.toString().endsWith(".java"))
-                    .collect(Collectors.toList());
-        } catch (IOException e) {
-            throw new InvalidProjectPathException(projectPath, e);
-        }
-
+        
+        List<File> javaFiles = new ArrayList<>();
+        findJavaFiles(root, javaFiles);
+        
         if (javaFiles.isEmpty()) {
-            throw new NoJavaFilesFoundException(projectPath);
+            throw new NoJavaFilesFoundException("No .java files found in " + rootPath);
         }
-
+        
         return javaFiles;
+    }
+
+    private void findJavaFiles(File dir, List<File> javaFiles) {
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    findJavaFiles(file, javaFiles);
+                } else if (file.getName().endsWith(".java")) {
+                    javaFiles.add(file);
+                }
+            }
+        }
     }
 }

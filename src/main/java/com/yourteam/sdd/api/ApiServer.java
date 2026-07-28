@@ -1,113 +1,101 @@
 package com.yourteam.sdd.api;
 
-import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.yourteam.sdd.core.AstMethodParser;
 import com.yourteam.sdd.core.DuplicateDetector;
-import com.yourteam.sdd.core.JaccardSimilarity;
-import com.yourteam.sdd.core.MethodParser;
+import com.yourteam.sdd.core.LevenshteinSimilarity;
 import com.yourteam.sdd.core.ProjectScanner;
 import com.yourteam.sdd.exceptions.InvalidProjectPathException;
 import com.yourteam.sdd.exceptions.NoJavaFilesFoundException;
 import com.yourteam.sdd.model.DuplicatePair;
 import com.yourteam.sdd.model.MethodModel;
-
 import io.javalin.Javalin;
-import io.javalin.http.staticfiles.Location;
+import io.javalin.http.Context;
 
-/**
- * Starts the HTTP API and static web interface for duplicate detection.
- */
-public final class ApiServer {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-    private static final int PORT = 7070;
-    private static final double DEFAULT_THRESHOLD = 0.75;
+public class ApiServer {
 
-    private ApiServer() {
-    }
-
-    /**
-     * Starts the server on port 7000.
-     *
-     * @param args command-line arguments, currently unused
-     */
     public static void main(String[] args) {
-        createApp().start(PORT);
+        // Simplified Javalin startup to resolve the version mismatch
+        Javalin app = Javalin.create().start(7070);
+
+        app.get("/health", ctx -> ctx.json(new HealthResponse("ok")));
+        app.post("/scan", ApiServer::handleScan);
     }
 
-    static Javalin createApp() {
-        Javalin app = Javalin.create(config ->
-                config.staticFiles.add("/public", Location.CLASSPATH));
+    private static void handleScan(Context ctx) {
+        try {
+            ScanRequest req = ctx.bodyAsClass(ScanRequest.class);
+            String path = req.path;
+            double threshold = req.threshold > 0 ? req.threshold : 0.75;
 
-        app.get("/api/health", ctx -> ctx.json(new HealthResponse("ok")));
-        app.post("/api/scan", ctx -> {
-            ScanRequest request = ctx.bodyAsClass(ScanRequest.class);
-            ctx.json(scan(request));
-        });
+            ProjectScanner scanner = new ProjectScanner();
+            AstMethodParser parser = new AstMethodParser();
+            DuplicateDetector detector = new DuplicateDetector(new LevenshteinSimilarity());
 
-        app.exception(InvalidProjectPathException.class,
-                (exception, ctx) -> ctx.status(400).json(new ErrorResponse(exception.getMessage())));
-        app.exception(NoJavaFilesFoundException.class,
-                (exception, ctx) -> ctx.status(400).json(new ErrorResponse(exception.getMessage())));
-        app.exception(IllegalArgumentException.class,
-                (exception, ctx) -> ctx.status(400).json(new ErrorResponse(exception.getMessage())));
-        app.exception(Exception.class,
-                (exception, ctx) -> ctx.status(500).json(new ErrorResponse("Unable to scan the project.")));
+            List<File> javaFiles = scanner.scan(path);
+            List<MethodModel> allMethods = parser.parseFiles(javaFiles);
+            List<DuplicatePair> duplicates = detector.findDuplicates(allMethods, threshold);
 
-        return app;
-    }
+            List<DuplicateResponse> duplicateResponses = new ArrayList<>();
+            for (DuplicatePair pair : duplicates) {
+                MethodModel first = pair.getFirst();
+                MethodModel second = pair.getSecond();
+                duplicateResponses.add(new DuplicateResponse(
+                        first.getSignatureLabel(),
+                        second.getSignatureLabel(),
+                        pair.getSimilarityScore()
+                ));
+            }
 
-    private static ScanResponse scan(ScanRequest request)
-            throws InvalidProjectPathException, NoJavaFilesFoundException {
-        if (request == null || request.path() == null || request.path().isBlank()) {
-            throw new IllegalArgumentException("path is required");
+            ctx.json(new ScanResponse(duplicateResponses));
+
+        } catch (InvalidProjectPathException | NoJavaFilesFoundException e) {
+            ctx.status(400).json(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            ctx.status(500).json(new ErrorResponse("Internal server error: " + e.getMessage()));
         }
-
-        double threshold = request.threshold() == null ? DEFAULT_THRESHOLD : request.threshold();
-        ProjectScanner scanner = new ProjectScanner();
-        MethodParser parser = new MethodParser();
-        DuplicateDetector detector = new DuplicateDetector(new JaccardSimilarity(), threshold);
-
-        List<Path> files = scanner.scan(request.path());
-        List<MethodModel> methods = parser.parseFiles(files);
-        List<DuplicatePair> duplicates = detector.findDuplicates(methods);
-
-        Set<String> distinctFiles = new HashSet<>();
-        methods.forEach(method -> distinctFiles.add(method.getFilePath()));
-
-        List<DuplicateResponse> results = duplicates.stream()
-                .map(ApiServer::toResponse)
-                .toList();
-
-        return new ScanResponse(request.path(), methods.size(), distinctFiles.size(), results);
     }
 
-    private static DuplicateResponse toResponse(DuplicatePair pair) {
-        MethodModel first = pair.getFirst();
-        MethodModel second = pair.getSecond();
-        return new DuplicateResponse(
-                first.getSignatureLabel(), first.getFilePath(), first.getLineNumber(),
-                second.getSignatureLabel(), second.getFilePath(), second.getLineNumber(),
-                pair.getSimilarityPercent());
+    // --- DTO Classes for JSON Serialization ---
+
+    public static class ScanRequest {
+        public String path;
+        public double threshold;
     }
 
-    private record ScanRequest(String path, Double threshold) {
+    public static class ScanResponse {
+        public List<DuplicateResponse> duplicates;
+        public ScanResponse(List<DuplicateResponse> duplicates) {
+            this.duplicates = duplicates;
+        }
     }
 
-    private record ScanResponse(String path, int methodCount, int fileCount,
-                                List<DuplicateResponse> duplicates) {
+    public static class DuplicateResponse {
+        public String methodA;
+        public String methodB;
+        public double score;
+
+        public DuplicateResponse(String methodA, String methodB, double score) {
+            this.methodA = methodA;
+            this.methodB = methodB;
+            this.score = score;
+        }
     }
 
-    private record DuplicateResponse(String firstMethod, String firstFile, int firstLine,
-                                     String secondMethod, String secondFile, int secondLine,
-                                     int similarityPercent) {
+    public static class ErrorResponse {
+        public String error;
+        public ErrorResponse(String error) {
+            this.error = error;
+        }
     }
 
-    private record HealthResponse(String status) {
-    }
-
-    private record ErrorResponse(String error) {
+    public static class HealthResponse {
+        public String status;
+        public HealthResponse(String status) {
+            this.status = status;
+        }
     }
 }
