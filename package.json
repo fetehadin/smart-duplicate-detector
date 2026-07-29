@@ -4,7 +4,7 @@
   "description": "A high-precision static analysis engine to find structural code clones in Java.",
   "main": "index.js",
   "bin": {
-    "sdd": "index.js"
+    "sdd": "./index.js"
   },
   "files": [
     "index.js",
