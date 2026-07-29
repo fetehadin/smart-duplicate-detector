@@ -1,6 +1,6 @@
 {
   "name": "smart-duplicate-detector",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A high-precision static analysis engine to find structural code clones in Java.",
   "main": "index.js",
   "bin": {
@@ -10,7 +10,13 @@
     "index.js",
     "target/smart-duplicate-detector.jar"
   ],
-  "keywords": ["java", "duplicate-code", "static-analysis", "ast", "cli"],
+  "keywords": [
+    "java",
+    "duplicate-code",
+    "static-analysis",
+    "ast",
+    "cli"
+  ],
   "author": "Fetehadin Negash",
   "license": "MIT"
 }
