@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import CodeBlock from "@/components/CodeBlock";
+import { FaGithub } from "react-icons/fa";
 import { useTheme } from "next-themes";
 import { 
-  ArrowRight, Mail, FileCode, CheckCircle, Terminal, 
+  ArrowRight, FileCode, CheckCircle, Terminal, 
   FolderOpen, Sliders, AlertTriangle, 
   Sparkles, Zap, Code2, GitBranch 
 } from "lucide-react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 export default function LandingPage() {
   const { theme } = useTheme();
@@ -277,56 +277,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Meet the Developer */}
-      <section className={`w-full max-w-4xl mx-auto px-6 py-16 border-t text-center ${
-        theme === "dark" ? "border-zinc-800" : "border-slate-200"
-      }`}>
-        <h2 className="text-2xl font-bold mb-4">Meet the Developer</h2>
-        <p className={`mb-8 max-w-lg mx-auto text-sm ${
-          theme === "dark" ? "text-zinc-400" : "text-slate-600"
-        }`}>
-          Built by <strong className={theme === "dark" ? "text-zinc-200" : "text-slate-900"}>Fetehadin Negash</strong>. Passionate about engineering smart, reliable tools that make developers&apos; lives easier.
-        </p>
-        <div className="flex items-center justify-center gap-4">
-          <a 
-            href="https://github.com/fetehadin" 
-            target="_blank" 
-            rel="noreferrer" 
-            className={`p-2.5 rounded-md border transition-all ${
-              theme === "dark" 
-                ? "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800" 
-                : "bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-            }`} 
-            title="GitHub"
-          >
-            <FaGithub size={20} />
-          </a>
-          <a 
-            href="https://www.linkedin.com/in/fetehadin/" 
-            target="_blank" 
-            rel="noreferrer" 
-            className={`p-2.5 rounded-md border transition-all ${
-              theme === "dark" 
-                ? "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-[#0A66C2] hover:bg-zinc-800" 
-                : "bg-white border-slate-200 text-slate-600 hover:text-[#0A66C2] hover:bg-slate-100"
-            }`} 
-            title="LinkedIn"
-          >
-            <FaLinkedin size={20} />
-          </a>
-          <a 
-            href="mailto:fetehadinnegash@gmail.com" 
-            className={`p-2.5 rounded-md border transition-all ${
-              theme === "dark" 
-                ? "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-sky-400 hover:bg-zinc-800" 
-                : "bg-white border-slate-200 text-slate-600 hover:text-sky-600 hover:bg-slate-100"
-            }`} 
-            title="Email"
-          >
-            <Mail size={20} />
-          </a>
-        </div>
-      </section>
+      
     </div>
   );
 }
