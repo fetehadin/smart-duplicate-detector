@@ -1,48 +1,87 @@
+# Smart Duplicate Detector (SDD)
+
+<div align="center">
+
 # Smart Duplicate Detector
 
-![Smart Duplicate Detector GUI](image.png)
+**AST-powered duplicate code detection for Java projects**
 
-## Overview
+Detect duplicate and highly similar methods before they become technical debt.
 
-A Java tool that scans a codebase and flags methods with duplicate or highly similar logic before they become technical debt.
+[![Website](https://img.shields.io/badge/Website-Live-success?style=for-the-badge)](https://smart-duplicate-detector.vercel.app/)
+[![Java 17](https://img.shields.io/badge/Java-17-orange?style=for-the-badge)](https://www.oracle.com/java/)
+[![Maven](https://img.shields.io/badge/Maven-Build-red?style=for-the-badge)](https://maven.apache.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
-Developers often reuse or regenerate business logic without realizing an equivalent method already exists elsewhere in the codebase. Over time these duplicates drift apart, and bugs get fixed in one copy but not the other. Smart Duplicate Detector scans a project, compares every method, and reports matches above a similarity threshold—with file, line number, and score—so duplication is caught before it's merged.
+**Website:** https://smart-duplicate-detector.vercel.app/
+
+</div>
 
 ---
 
-## The "Why": Technical Approach
+## Overview
 
-Traditional duplicate detectors often rely on raw string matching or tokenization. This leads to a massive amount of "false positive" noise—flagging standard boilerplate, imports, or basic getters and setters as duplicated code.
+Smart Duplicate Detector (SDD) is an AST-powered static analysis tool that scans Java codebases to detect duplicate or highly similar methods before they become technical debt.
 
-**Smart Duplicate Detector** solves this using a two-step semantic approach:
+Unlike traditional duplicate detection tools that rely on text or token matching, SDD analyzes the structure of Java methods to identify duplicated business logic while minimizing false positives.
 
-1. **AST Method Parsing:** By leveraging JavaParser, the engine parses the codebase into an Abstract Syntax Tree (AST) and isolates functional methods. It completely ignores class-level boilerplate, fields, and imports.
+As projects grow, duplicate implementations often appear through copy-paste programming, AI-assisted code generation, or independent implementations of the same functionality. Over time these methods diverge, leading to inconsistent bug fixes and increased maintenance costs.
 
-2. **Weighted Levenshtein Algorithm:** Instead of basic string comparison, SDD compares the logic and structure of the methods using a custom Weighted Levenshtein distance algorithm. This accurately calculates similarity percentages, ensuring that only genuine logic clones are flagged while ignoring minor whitespace or variable renaming differences.
+Smart Duplicate Detector compares every method in a project and reports duplicate pairs with:
+
+- Similarity score
+- File location
+- Line number
+- Method name
 
 ---
 
 ## Features
 
-- **Global CLI Tool:** Wrapped in NPM for a frictionless 1-step installation and a global `sdd` command.
-- **Modern Desktop App:** Sleek, dark-themed Java Swing GUI powered by FlatLaf with real-time background scanning (`SwingWorker`).
-- **High Precision:** Structural extraction of every method into a comparable AST model.
-- **Smart Scoring:** Highly accurate similarity scoring via `LevenshteinSimilarity`.
-- Custom exception handling for invalid or empty project paths.
-- *(Planned)* Scan a public GitHub repository directly by URL instead of a local path.
+- Global CLI distributed through NPM
+- Modern desktop GUI built with Java Swing
+- Dark theme powered by FlatLaf
+- AST-based Java method extraction
+- Weighted Levenshtein similarity scoring
+- Configurable similarity threshold
+- Project-wide duplicate scanning
+- Background processing using `SwingWorker`
+- Robust exception handling
+- Console reporting
 
 ---
 
-## Tech Stack
+## How It Works
 
-| Layer | Technology |
-| :--- | :--- |
-| **Language** | Java 17 |
-| **Build & Distribution** | Maven, Node.js / NPM (CLI Wrapper) |
-| **Parsing** | JavaParser |
-| **Desktop GUI** | Java Swing + FlatLaf (Modern Dark Theme) |
-| **Backend / API** | Javalin (REST, JSON via Jackson) |
-| **Testing** | JUnit 5 |
+Traditional duplicate detectors typically rely on raw string matching or token comparison. This often produces false positives by flagging imports, getters, setters, or formatting differences.
+
+Smart Duplicate Detector follows a two-stage semantic analysis pipeline.
+
+### 1. AST Parsing
+
+Using JavaParser, the source code is parsed into an Abstract Syntax Tree (AST).
+
+Only meaningful Java methods are extracted while ignoring:
+
+- Imports
+- Package declarations
+- Fields
+- Constructors
+- Boilerplate code
+
+This produces a clean collection of methods for comparison.
+
+### 2. Similarity Analysis
+
+Each extracted method is compared against every other method using a customized Weighted Levenshtein Similarity algorithm.
+
+The algorithm measures structural similarity while remaining resilient to:
+
+- Whitespace differences
+- Formatting changes
+- Minor variable renaming
+
+The final output is a similarity percentage representing how closely two methods match.
 
 ---
 
@@ -50,27 +89,67 @@ Traditional duplicate detectors often rely on raw string matching or tokenizatio
 
 ```text
 smart-duplicate-detector/
-├── package.json & index.js   # NPM Bridge for global 'sdd' command
-├── model/                    # MethodModel, DuplicatePair
-├── core/                     # ProjectScanner, AstMethodParser, SimilarityAlgorithm...
-├── gui/                      # MainFrame (Swing Desktop App)
-├── report/                   # AbstractReport, ConsoleReport
-├── exceptions/               # InvalidProjectPathException, NoJavaFilesFoundException
-├── api/                      # ApiServer (REST endpoints)
-├── cli/                      # CliRunner
-└── resources/                # (web frontend / static files)
+│
+├── package.json
+├── index.js
+│
+├── model/
+│   ├── MethodModel
+│   └── DuplicatePair
+│
+├── core/
+│   ├── ProjectScanner
+│   ├── AstMethodParser
+│   └── SimilarityAlgorithm
+│
+├── gui/
+│   └── MainFrame
+│
+├── report/
+│   ├── AbstractReport
+│   └── ConsoleReport
+│
+├── exceptions/
+│   ├── InvalidProjectPathException
+│   └── NoJavaFilesFoundException
+│
+├── api/
+│   └── ApiServer
+│
+├── cli/
+│   └── CliRunner
+│
+└── resources/
 ```
 
 ---
 
-## 🚀 Getting Started (End Users)
+## Tech Stack
 
-The easiest way to use Smart Duplicate Detector is via our NPM package, which automatically links the `sdd` command to your system.
+| Layer | Technology |
+|--------|------------|
+| Language | Java 17 |
+| Parsing Engine | JavaParser |
+| Similarity Engine | Weighted Levenshtein |
+| Desktop UI | Java Swing + FlatLaf |
+| REST API | Javalin |
+| JSON Processing | Jackson |
+| Build Tool | Maven |
+| CLI Distribution | Node.js + NPM |
+| Testing | JUnit 5 |
+| Documentation | Next.js 16 |
+| Styling | Tailwind CSS |
+| Deployment | Vercel |
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
-- Java 17+
-- Node.js & NPM
+- Java 17 or later
+- Node.js
+- NPM
 
 ### Install Globally
 
@@ -78,79 +157,122 @@ The easiest way to use Smart Duplicate Detector is via our NPM package, which au
 npm install -g smart-duplicate-detector
 ```
 
-### Launch the UI
-
-To launch the modern FlatLaf desktop dashboard, open your terminal anywhere and type:
+### Launch the Desktop Application
 
 ```bash
 sdd
 ```
 
-### Run via CLI (Headless)
-
-To run a silent scan in your terminal without opening the GUI:
+### Run a CLI Scan
 
 ```bash
-sdd --path ./path/to/project --threshold 0.80
+sdd --path ./path/to/java/project --threshold 0.80
 ```
 
 ---
 
-## 🛠️ Developer Setup (Build from Source)
+## Build From Source
 
-If you want to modify the Java engine or build the Fat-JAR yourself:
-
-### 1. Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/fetehadin/smart-duplicate-detector.git
+
 cd smart-duplicate-detector
 ```
 
-### 2. Build the Engine
+### Build
 
 ```bash
 mvn clean package
 ```
 
-### 3. Run Locally
+### Run
 
 ```bash
 java -jar target/smart-duplicate-detector.jar
 ```
 
-*Alternatively, run `npm link` in the root folder to test the global `sdd` command locally!*
+### Test the Global CLI
 
----
-
-## Usage Example (CLI & GUI Output)
-
-```text
-Scanning project files...
-Found 27 valid methods.
-Running Levenshtein comparison engine...
-
-DUPLICATE FOUND (92% similar)
- → EngineTest.java:14 -> testIdenticalSequenceLevenshteinScore
- → EngineTest.java:29 -> testDifferentSequenceLevenshteinScore
-
-DUPLICATE FOUND (100% similar)
- → TestScenarios.java:6 -> calculateTaxUSA
- → TestScenarios.java:14 -> calculateTaxUK
-
-Scan complete. 2 duplicate pairs found.
+```bash
+npm link
 ```
 
 ---
 
-## Known Limitations
+## Example Output
 
-- Comparison is all-pairs (`O(n²)`): Fine for a single project, but not intended for massive, multi-gigabyte monorepos.
-- Only structural/token similarity is considered: No control-flow or semantic analysis yet.
-- GitHub-repo scanning (clone + scan by URL) is planned for a future release.
+```text
+Scanning project files...
+
+Found 27 valid methods.
+
+Running Levenshtein comparison engine...
+
+DUPLICATE FOUND (92% similar)
+
+EngineTest.java:14
+→ testIdenticalSequenceLevenshteinScore
+
+EngineTest.java:29
+→ testDifferentSequenceLevenshteinScore
+
+------------------------------------------------
+
+DUPLICATE FOUND (100% similar)
+
+TestScenarios.java:6
+→ calculateTaxUSA
+
+TestScenarios.java:14
+→ calculateTaxUK
+
+------------------------------------------------
+
+Scan complete.
+
+2 duplicate pairs found.
+```
+
+---
+
+## Why Smart Duplicate Detector?
+
+- Detects duplicate business logic instead of simple text matches
+- AST-aware parsing significantly reduces false positives
+- Configurable similarity threshold
+- Available as both a desktop application and CLI
+- Distributed through NPM for easy installation
+- Built for future IDE and CI/CD integration
+
+---
+
+## Roadmap
+
+- GitHub repository scanning (`sdd --url`)
+- Parallel comparison engine for large codebases
+- VS Code extension
+- GitHub Actions integration
+- HTML and PDF report generation
+- AI-assisted duplicate recommendations
+- Incremental project scanning
+- Multi-language support
 
 ---
 
 ## License
 
-MIT — see `LICENSE`.
+This project is licensed under the MIT License.
+
+See the `LICENSE` file for details.
+
+---
+
+<div align="center">
+
+If you find Smart Duplicate Detector useful, consider giving the repository a star.
+
+https://smart-duplicate-detector.vercel.app/
+
+</div>
